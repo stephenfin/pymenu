@@ -1,0 +1,61 @@
+{
+  "menu": {
+    "name": "Main Menu",
+    "items": [
+      {
+        "menu": {
+          "name": "Sub Menu 1",
+          "items": [
+            {
+              "menu": {
+                "name": "Sub Menu A",
+                "items": []
+              }
+            },
+            {
+              "menu": {
+                "name": "Sub Menu B",
+                "items": []
+              }
+            }
+          ]
+        }
+      },
+      {
+        "menu": {
+          "name": "Sub Menu 2",
+          "items": [
+            {
+              "menu": {
+                "name": "Sub Menu A",
+                "items": []
+              }
+            },
+            {
+              "menu": {
+                "name": "Sub Menu B",
+                "items": []
+              }
+            }
+          ]
+        }
+      },
+      {
+        "menu": {
+          "name": "Sub Menu 3",
+          "items": []
+        }
+      },
+      {
+        "function": {
+          "name" : "hello world",
+          "module" : "example",
+          "args": [
+            {"param1": "hello"},
+            {"param2": "world"}
+          ]
+        }
+      }
+    ]
+  }
+}
