@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """Simple CLI menu framework.
 
@@ -8,6 +9,11 @@ structure.
 
 import io
 import json
+try:
+  import yaml
+except ImportError:
+  print('Failed to import the "yaml" module. YAML support will be disabled.')
+  print('Please install PyYAML using `pip`')
 
 class Menu(object):
   """CLI Menu object"""
@@ -21,8 +27,16 @@ class Menu(object):
     self.root_path = path
     self.error_message = error_message
 
+    file_name, file_extension = os.path.splitext(self.root_path)
+
     with io.open(self.root_path, 'r') as fn:  # open file specfying menu hierarchy
-      self.menu = json.loads(fn.read())  # convert json file to Python objects
+      if file_extension == '.json':
+        self.menu = json.load(fn.read())  # convert json file to Python objects
+      elif file_extension == '.yaml':
+        self.menu = yaml.load(fn.read())  # convert json file to Python objects
+      else:  # unrecognised extension
+        raise Exception(
+          'Unrecognised file extension. pymenu only supports .json and .yaml files')
 
   def show(self):
     """Show a menu to a user.
@@ -46,6 +60,13 @@ class Menu(object):
     if 'menu' in menu:
       sub_menu = menu['menu']  # decend menu
       name = sub_menu['name']
+      
+      # dealing with imported menu
+      if 'import' in sub_menu:
+        import_menu = Menu(sub_menu['import'])
+        return import_menu.show()
+      
+      # implicitly dealing with normal menu
       items = sub_menu['items']
 
       option = -1
@@ -85,7 +106,7 @@ class Menu(object):
         option = -1
 
     # called a function item
-    else:
+    elif 'function' in menu:
       function = menu['function']
 
       name = function['name']
@@ -96,6 +117,10 @@ class Menu(object):
       func = getattr(mod, func)  # get function object
 
       return func(*args)  # call function with arguments
+    
+    # neither menu nor function, i.e. unrecognised option
+    else:
+      Exception('Incorrectly formatted file!')
 
     return
 
