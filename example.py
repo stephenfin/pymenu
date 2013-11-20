@@ -4,6 +4,7 @@
 
 from pymenu import Menu
 
+
 def hello_world(param1=None, param2=None):
   if param1 and param2:
     print('Here are the arguments I received:')
@@ -12,9 +13,6 @@ def hello_world(param1=None, param2=None):
     print('\n')
   else:
     print('Hello, world! (No params :()')
-
-if __name__ == '__main__':
-  hello_world()
 
 
 def show_menu():
