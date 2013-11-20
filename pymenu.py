@@ -113,11 +113,12 @@ class Menu(object):
       name = function['name']
       func = function['func'] if 'func' in function else self._format_menu_to_func(name)
       args = function['args']
+      args = { k: v for d in args for k, v in d.items() }  # merge list of dicts
 
       mod = __import__(function['module'])  # get module object
       func = getattr(mod, func)  # get function object
 
-      return func(*args)  # call function with arguments
+      return func(**args)  # call function with arguments
     
     # neither menu nor function, i.e. unrecognised option
     else:
