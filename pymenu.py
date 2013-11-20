@@ -7,18 +7,24 @@ A simple CLI menu framework that uses json definition files to define menu
 structure.
 """
 
-import io
+from __future__ import with_statement
+
 import os
-import json
+
+try:
+  import json
+except ImportError:
+  print('Failed to import the "json" module. JSON support will be disabled.')
+  print('Please install simplejson using `pip`')
 try:
   import yaml
 except ImportError:
   print('Failed to import the "yaml" module. YAML support will be disabled.')
   print('Please install PyYAML using `pip`')
 
+
 class Menu(object):
   """CLI Menu object"""
-
   def __init__(self, path, error_message=None):
     """Initialise a menu object.
 
@@ -30,11 +36,11 @@ class Menu(object):
 
     file_name, file_extension = os.path.splitext(self.root_path)
 
-    with io.open(self.root_path, 'r') as fn:  # open file specfying menu hierarchy
+    with open(self.root_path, 'r') as fn:  # open file specfying menu hierarchy
       if file_extension == '.json':
         self.menu = json.load(fn.read())  # convert json file to Python objects
       elif file_extension == '.yaml':
-        self.menu = yaml.load(fn.read())  # convert json file to Python objects
+        self.menu = yaml.load(fn.read())  # convert yaml file to Python objects
       else:  # unrecognised extension
         raise Exception(
           'Unrecognised file extension. pymenu only supports .json and .yaml files')
@@ -77,12 +83,12 @@ class Menu(object):
         # loop until valid user input is retrieved
         while (option not in range(1,len(items) + 1)) and (option != 0):
           # print test header
-          print('---- {} ----\n'.format(sub_menu['name']))
+          print('---- %s ----\n' % (sub_menu['name']))
 
           # print test options
           for i, item in enumerate(items):
             item = item['menu'] if 'menu' in item else item['function']
-            print(' [{}] {}'.format(i + 1, item['name'].title()))
+            print(' [%d] %s' % (i + 1, item['name'].title()))
 
           # print exit option
           print('\n [0] Exit')
@@ -113,7 +119,7 @@ class Menu(object):
       name = function['name']
       func = function['func'] if 'func' in function else self._format_menu_to_func(name)
       args = function['args']
-      args = { k: v for d in args for k, v in d.items() }  # merge list of dicts
+      args = dict((k,v) for d in args for (k,v) in d.items()) # merge dict list
 
       mod = __import__(function['module'])  # get module object
       func = getattr(mod, func)  # get function object
