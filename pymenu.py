@@ -8,6 +8,7 @@ structure.
 """
 
 import io
+import os
 import json
 try:
   import yaml
