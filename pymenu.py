@@ -32,6 +32,7 @@ class Menu(object):
     :param error_message: Error message to show to user on invalid option
     """
     self.root_path = path
+    self.root_dir = os.path.dirname(path)
     self.error_message = error_message
 
     file_name, file_extension = os.path.splitext(self.root_path)
@@ -70,7 +71,8 @@ class Menu(object):
       
       # dealing with imported menu
       if 'import' in sub_menu:
-        import_menu = Menu(sub_menu['import'])
+        path = os.path.join(self.root_dir, sub_menu['import'])
+        import_menu = Menu(path)
         return import_menu.show()
       
       # implicitly dealing with normal menu
