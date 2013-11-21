@@ -120,7 +120,7 @@ class Menu(object):
 
       name = function['name']
       func = function['func'] if 'func' in function else self._format_menu_to_func(name)
-      args = function['args']
+      args = function['args'] if 'args' in function else [{}]
       args = dict((k,v) for d in args for (k,v) in d.items()) # merge dict list
 
       mod = __import__(function['module'])  # get module object
